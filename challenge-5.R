@@ -25,3 +25,35 @@
 
 # 6. Beschreibe mit einem Satz, was dir bei der Interpretation der Daten auffällt und committe diesen mit deinen Ergebnissen
 
+#libraries
+
+library(dplyr)
+library(purrr)
+library(readxl)
+library(tidyr)
+library(ggplot2)
+library(janitor)
+
+
+#load & modify Data
+stadtteil = read_excel("data/StadtteilprofileBerichtsjahr2017.xlsx", skip = 3) %>%
+  clean_names()
+
+stadtteil = stadtteil %>% 
+  rename(stadtteil = x1)
+
+stadtteil = stadtteil %>% 
+  select(stadtteil, gesamtbetrag_der_einkunfte_je_steuerpflichtigen_lohn_und_einkommen_steuer_im_jahr, durchschnittliche_wohnungsgrosse_in_m2, durchschnittlicher_immobilienpreis_fur_eine_eigentums_wohnung_in_eur_m2) %>% 
+  rename(einkommen = gesamtbetrag_der_einkunfte_je_steuerpflichtigen_lohn_und_einkommen_steuer_im_jahr) %>% 
+  rename(wohnungsgroesse = durchschnittliche_wohnungsgrosse_in_m2) %>% 
+  rename(kaufpreis_m2 = durchschnittlicher_immobilienpreis_fur_eine_eigentums_wohnung_in_eur_m2)
+
+#plot Data
+ggplot(data = stadtteil, aes(x=wohnungsgroesse, y=einkommen, color=kaufpreis_m2))+
+  geom_point()+
+  ggtitle("Vergleich der Wohnfläche und dem Einkommen")+
+  ylab("Einkommen in €")+
+  xlab("Größe der Wohnung in m2")+
+  labs(color = "Kaufpreis pro m2")
+
+
